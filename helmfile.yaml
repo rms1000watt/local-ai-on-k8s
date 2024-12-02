@@ -1,0 +1,29 @@
+# helmfile -f helmfile.yaml diff
+
+repositories:
+- name: ollama-helm
+  url: https://otwld.github.io/ollama-helm/
+
+releases:
+- name: ollama
+  namespace: ollama
+  chart: ollama-helm/ollama
+  version: 0.69.0
+  values:
+  - ollama:
+      insecure: true
+      gpu:
+        enabled: false
+      models:
+        - qwen2.5-coder:0.5b
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+      - host: ollama.rms1000watt.com
+        paths:
+          - path: /
+            pathType: Prefix
+    # The chart makes it this port on the cluster: 31434
+    service:
+      type: NodePort
